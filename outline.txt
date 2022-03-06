@@ -1,0 +1,17 @@
+scope:
+    - Useable app for playing dnd campaigns
+
+
+Features
+    - 3d space with square or hexagonal grid
+        - used each turn to keep track of movement
+    - Save / Load campaigns
+        - import 3d assets
+        - set up worlds for other people
+    - DM role, directing session
+        - has full "creative mode", can change stuffs
+        - automatic initiative turn-based system
+    - player role
+        - keeps track of inventory, status effects, anything else on character sheet
+    - in-game dice
+        - option to manually input roles from real dice
