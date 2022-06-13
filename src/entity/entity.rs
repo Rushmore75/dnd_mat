@@ -20,30 +20,30 @@ impl Entity {
     */
 
     // TODO: distill functions, work on Ability's distillation first
-    pub fn new_generic(name: String) -> Self {
+    // pub fn new_generic(name: String) -> Self {
 
-        // find solution with less repeated lines
-        let str = Proficiency::<StrengthProfs>::new_generic();
-        let dex = Proficiency::<DexterityProfs>::new_generic();
-        let con = Proficiency::<ConstitutionProfs>::new_generic();
-        let int = Proficiency::<IntelligenceProfs>::new_generic();
-        let wis = Proficiency::<WisdomProfs>::new_generic();
-        let cha = Proficiency::<CharismaProfs>::new_generic();
+    //     // find solution with less repeated lines
+    //     let str = Proficiency::<StrengthProfs>::new_generic();
+    //     let dex = Proficiency::<DexterityProfs>::new_generic();
+    //     let con = Proficiency::<ConstitutionProfs>::new_generic();
+    //     let int = Proficiency::<IntelligenceProfs>::new_generic();
+    //     let wis = Proficiency::<WisdomProfs>::new_generic();
+    //     let cha = Proficiency::<CharismaProfs>::new_generic();
 
-        Self {
-            name,
-            abilities: (str, dex, con, int, wis, cha),
-        }
-    }
+    //     Self {
+    //         name,
+    //         abilities: (str, dex, con, int, wis, cha),
+    //     }
+    // }
 
     pub fn new_cli_ask(name: String) -> Self {
         // find solution with less repeated lines
-        let str = Proficiency::<StrengthProfs>::new_cli_ask();
-        let dex = Proficiency::<DexterityProfs>::new_cli_ask();
-        let con = Proficiency::<ConstitutionProfs>::new_cli_ask();
-        let int = Proficiency::<IntelligenceProfs>::new_cli_ask();
-        let wis = Proficiency::<WisdomProfs>::new_cli_ask();
-        let cha = Proficiency::<CharismaProfs>::new_cli_ask();
+        let str = Proficiency::<StrengthProfs>::new_cli_ask("Strength");
+        let dex = Proficiency::<DexterityProfs>::new_cli_ask("Dexterity");
+        let con = Proficiency::<ConstitutionProfs>::new_cli_ask("Constitution");
+        let int = Proficiency::<IntelligenceProfs>::new_cli_ask("Intelligence");
+        let wis = Proficiency::<WisdomProfs>::new_cli_ask("Wisdom");
+        let cha = Proficiency::<CharismaProfs>::new_cli_ask("Charisma");
 
         Self {
             name,

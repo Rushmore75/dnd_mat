@@ -1,7 +1,7 @@
 use strum_macros::{EnumIter, Display};
 use std::{collections::HashMap, fmt::Display, hash::Hash};
 use strum::IntoEnumIterator;
-use crate::input_and_output::get_input;
+use crate::input_and_output::get_input_parsed_wmsg;
 
 /*
         --😎-- abstract logic --😎--
@@ -11,6 +11,7 @@ T becomes the enum for the stat you are creating
 */
 pub struct Proficiency<T> {
     // make sure pub-lic
+    pub name: String,
     pub level: i8,
     pub modifier: i8,
     pub profs: HashMap<T, bool>,
@@ -18,14 +19,11 @@ pub struct Proficiency<T> {
 
 impl<T: IntoEnumIterator + Eq + Hash + Display> Proficiency<T> {
 
-    // TODO: distill all the function's variants down to one core function with layers on top...
-    // no duplicate code!
-
-    pub fn new_cli_ask() -> Self {
+    pub fn new_cli_ask(category_name: &str) -> Self {
+        // the cli asking should be done in entity not here
 
         // I need "T.name()" basically, but idk how to get that info
-        let level = 6;
-        // let level = get_input(format!("Enter your level for {}", T)).parse::<i8>().unwrap();
+        let level = get_input_parsed_wmsg::<i8>(format!("Enter your level for {}", category_name)).unwrap();
 
         // map the enum's values to boolean values
         let mut proficiencies = HashMap::new();
@@ -33,43 +31,34 @@ impl<T: IntoEnumIterator + Eq + Hash + Display> Proficiency<T> {
         for entry in T::iter() {
 
             // get command-line input and parse into a (signed) 8 bit number
-            let mut s = String::new(); 
-            get_input(format!("Proficient in: {}?", entry), &mut s);
-            let parsed = s.trim().parse::<i8>().unwrap();
-            // ^^ yes this is weird, but "known memory size at compile" & "lifetime modifiers" kinda forced my hand
-            
+            let parsed = get_input_parsed_wmsg::<i8>(format!("Proficient in: {}?", entry)).unwrap();
+
             // convert number to bool, I think parsing a bool would be a little harder than just
             // doing this. IDK tho, haven't tried
             let val = if parsed == 0 {false} else {true}; // there isn't a turnary operator :(
             
-                // enter value in map with the currently selected attribute
+            // enter value in map with the currently selected attribute
             proficiencies.insert(entry, val);
         }
 
-        // build struct
-        Self {
-            level,
-            modifier: get_modifier(level), // checks against a predefined list for mods
-            profs: proficiencies,
-        }
+        // build function
+        Proficiency::new(category_name, level, proficiencies)
     }
 
-    
-    pub fn new_generic() -> Self {
-        // same as new_cli_ask(), but just set all the proficiencies to false.
-        // possible easier to understand tho, less lines.
+    pub fn new_ext_hashmap(category_name: &str, level: i8, proficiencies: HashMap<T, bool>) -> Self {
+        /*
+            This is probably a bad idea to expose the hashmap creation but it 
+            might come in useful when scripting entities
+        */
+        Proficiency::new(category_name, level, proficiencies)
+    }
 
-        // map the enum's values to boolean values
-        let mut proficiencies = HashMap::new();
-        let level = 10;
-
-        for entry in T::iter() {
-            // ofc some of these will be true in the final product, but those are selected by the user
-            // so just a line or two getting the user's input for each would be needed
-            proficiencies.insert(entry, false);
-        }
-        // build struct
+    fn new(category_name: &str, level: i8, proficiencies: HashMap<T, bool>) -> Self {
+        /*
+            The head honcho for creating the actual struct
+        */
         Self {
+            name: category_name.to_string(),
             level,
             modifier: get_modifier(level),
             profs: proficiencies,
@@ -106,7 +95,12 @@ fn get_modifier(level: i8) -> i8 {
     modifier as i8
 }
 
-
+// fn get_name<T>() -> String {
+    
+//     match T {
+//         StrengthProfs::Athletics => "Thing".to_string(), 
+//     }
+// }
 
 /* 
 Could all these be in a mod to make generics easier? (shorter)
@@ -126,6 +120,11 @@ Makes cleaner code in practice.
     add abilities and their specific proficiencies here
     note: ability level will be added later on in the Ability struct
     also: the boolean value will be mapped on later in a hashmap
+*/
+/*
+    Can i just make my own "enum" that actually fits my needs?
+    - iterator
+    - access to the name
 */
 
 #[derive(EnumIter, Debug, Hash, PartialEq, Eq, Display)]
